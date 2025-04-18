@@ -1,0 +1,179 @@
+
+------------------------------------------------ /opt/cray/pe/lmod/modulefiles/mpi/gnu/8.0/ofi/1.0/cray-mpich/8.0 -------------------------------------------------
+   cray-hdf5-parallel/1.12.2.3        cray-parallel-netcdf/1.12.3.3         craype-dl-plugin-py3/21.04.1      craype-dl-plugin-py3/22.12.1 (D)
+   cray-hdf5-parallel/1.12.2.7 (D)    cray-parallel-netcdf/1.12.3.7  (D)    craype-dl-plugin-py3/22.06.1.2    craype-dl-plugin-py3/23.09.1
+   cray-mpixlate/1.0.1.10             craype-dl-plugin-ftr/22.06.1.2        craype-dl-plugin-py3/22.08.1      craype-dl-plugin-py3/24.03.1
+   cray-mpixlate/1.0.2         (D)    craype-dl-plugin-py3/21.02.1.3        craype-dl-plugin-py3/22.09.1
+
+---------------------------------------------- /software/projects/pawsey0001/setonix/2024.05/modules/zen3/gcc/12.2.0 ----------------------------------------------
+   bash-utils/devel    fsbw/devel-f8776c2    module-stats/master    record-energy/master
+
+---------------------------------------------- /software/setonix/2024.05/modules/zen3/gcc/12.2.0/astro-applications -----------------------------------------------
+   apr-util/1.6.3                  casacore/3.4.0-openmp             hyperdrive-amd-gfx90a/0.4.1        py-funcsigs/1.0.2
+   apr/1.5.2                       casacore/3.4.0                    hyperdrive/0.4.1                   subversion/1.9.7
+   birli/0.15.1                    casacore/3.5.0-openmp      (D)    libzmq/4.3.3                       subversion/1.14.2                  (D)
+   calceph/3.5.5                   cfitsio/3.49                      log4cxx/0.12.1-c++11               wcslib/7.3-nocfitsio
+   casacore/3.2.1                  cfitsio/4.3.0              (D)    log4cxx/0.12.1-c++17        (D)    wcslib/7.3                         (D)
+   casacore/3.3.0-adios2-openmp    chgcentre/1.6                     mcpp/2.7.2                         wcstools/3.9.7
+   casacore/3.3.0-adios2           cppunit/1.14.0                    mwalib/1.5.0                       wsclean/2.9
+   casacore/3.3.0-openmp           cppzmq/4.9.0                      pgplot/5.2.2                       wsclean/3.4-idg-everybeam-mpi
+   casacore/3.3.0                  giant-squid/2.0.1                 py-astropy/4.2.1                   wsclean/3.4-idg-everybeam          (D)
+   casacore/3.4.0-adios2-openmp    hyperbeam-amd-gfx90a/0.9.3        py-astropy/5.1              (D)    xerces-c/3.2.4-transcoder-gnuiconv
+   casacore/3.4.0-adios2           hyperbeam/0.9.3                   py-emcee/3.1.1                     xerces-c/3.2.4-transcoder-iconv    (D)
+
+----------------------------------------------- /software/setonix/2024.05/modules/zen3/gcc/12.2.0/bio-applications ------------------------------------------------
+   beast1/1.10.4    beast2/2.7.4    exabayes/1.5.1    examl/3.0.22
+
+------------------------------------------------- /software/setonix/2024.05/modules/zen3/gcc/12.2.0/applications --------------------------------------------------
+   ansys-fluids/2022R1            gromacs/2022.5-double               lammps/20230802          ncview/2.1.9             vasp/5.4.4
+   ansys-fluids/2023R1     (D)    gromacs/2022.5-mixed                lammps/20230802.3 (D)    nekrs-amd-gfx90a/23.0    vasp6/6.2.1
+   cdo/2.2.2                      gromacs/2023-double                 namd/2.14                nektar/5.0.2             vasp6/6.3.0 (D)
+   cp2k/2023.2                    gromacs/2023-mixed           (D)    namd/2.15a2       (D)    nwchem/7.2.0
+   cpmd/4.3                       lammps-amd-gfx90a/20230802          ncl/6.6.2                openfoam/2206
+   gromacs-amd-gfx90a/2023        lammps-amd-gfx90a/20230802.3 (D)    nco/5.1.6                quantum-espresso/7.2
+
+--------------------------------------------------- /software/setonix/2024.05/modules/zen3/gcc/12.2.0/libraries ---------------------------------------------------
+   adios2/2.8.3-hdf5                hdf5/1.10.7-api-v18                    kokkos/4.1.00-hpx             parmetis/4.0.3
+   adios2/2.9.2-hdf5                hdf5/1.10.7-api-v110                   kokkos/4.1.00-openmp   (D)    parmetis/4.0.3-64bit       (D)
+   adios2/2.9.2              (D)    hdf5/1.10.7-parallel-api-v18           magma-amd-gfx90a/2.7.2        petsc/3.20.1-complex
+   amdblis/3.0.1                    hdf5/1.10.7-parallel-api-v110          metis/5.1.0                   petsc/3.20.1-nocomplex     (D)
+   arpack-ng/3.9.0                  hdf5/1.14.3-api-v18                    metis/5.1.0-64bit      (D)    plasma/23.8.2
+   blaspp/2023.11.05                hdf5/1.14.3-api-v110                   netcdf-c/4.9.2                plumed/2.8.2
+   boost/1.83.0-c++14-python        hdf5/1.14.3-api-v112                   netcdf-cxx/4.2                plumed/2.9.0               (D)
+   boost/1.83.0-c++98-python (D)    hdf5/1.14.3-parallel-api-v18           netcdf-cxx4/4.3.1             scotch/7.0.4-metis
+   charmpp/7.0.0                    hdf5/1.14.3-parallel-api-v110          netcdf-fortran/4.6.1          scotch/7.0.4               (D)
+   eigen/3.4.0                      hdf5/1.14.3-parallel-api-v112   (D)    netlib-lapack/3.11.0          slate/2023.11.05
+   fftw/2.1.5                       hpx/1.9.1                              netlib-scalapack/2.2.0        trilinos-amd-gfx90a/15.0.0
+   fftw/3.3.10               (D)    kokkos-amd-gfx90a/3.7.02-openmp        openblas/0.3.24               trilinos/15.0.0
+   fits2idia/0.1.15                 kokkos-amd-gfx90a/4.1.00-openmp (D)    opencv/4.8.0
+   gsl/2.7.1                        kokkos/3.7.02-openmp                   parallel-netcdf/1.12.3
+
+--------------------------------------------- /software/setonix/2024.05/modules/zen3/gcc/12.2.0/programming-languages ---------------------------------------------
+   go/1.21.3             perl/5.38.0      python/3.11.6 (D)    r/4.4.1    (D)    rocm/5.5.3    rocm/5.7.0    rocm/5.7.3    rust/1.78.0
+   openjdk/17.0.8.1_1    python/3.9.15    r/4.3.0              rocm/5.4.6        rocm/5.6.1    rocm/5.7.1    ruby/3.1.0
+
+--------------------------------------------------- /software/setonix/2024.05/modules/zen3/gcc/12.2.0/utilities ---------------------------------------------------
+   autoconf/2.69      gnuplot/5.4.3          nextflow/23.10.0              py-pip/23.1.2-py3.11.6        (D)    reframe/3.12.0
+   automake/1.16.5    libtool/2.4.7          nextflow/24.04.3       (D)    py-setuptools/59.4.0-py3.9.15        reframe/4.0.4     (D)
+   awscli/1.29.41     lz4/1.9.4              ninja/1.11.1                  py-setuptools/59.4.0-py3.11.6        squashfs/4.6.1
+   cmake/3.27.7       mpifileutils/0.11.1    parallel/20220522             py-setuptools/68.0.0-py3.9.15        tower-agent/0.4.5
+   feh/3.10           nano/7.2               py-boto3/1.26.26              py-setuptools/68.0.0-py3.11.6 (D)    tower-cli/0.7.0
+   ffmpeg/4.4.1       nextflow/22.10.0       py-pip/23.1.2-py3.9.15        rclone/1.63.1
+
+------------------------------------------------ /software/setonix/2024.05/modules/zen3/gcc/12.2.0/python-packages ------------------------------------------------
+   py-cython/0.29.36        py-h5netcdf/0.10.0    py-matplotlib/3.8.1         py-numba/0.57.0        py-pandas/1.5.3         py-scikit-learn/1.3.2
+   py-cython/3.0.4   (D)    py-h5py/3.8.0         py-mpi4py/3.1.5-py3.11.6    py-numpy/1.24.4        py-pandas/2.1.2  (D)    py-scipy/1.11.3
+   py-dask/2023.4.1         py-ipython/8.14.0     py-netcdf4/1.6.2            py-numpy/1.26.1 (D)    py-plotly/5.14.1
+
+------------------------------------------------- /software/setonix/2024.05/modules/zen3/gcc/12.2.0/benchmarking --------------------------------------------------
+   hpl/2.3+openmp    hpl/2.3 (D)    ior/3.3.0    osu-micro-benchmarks/7.3
+
+------------------------------------------------ /software/setonix/2024.05/modules/zen3/gcc/12.2.0/developer-tools ------------------------------------------------
+   caliper/2.10.0    hpcviewer/2023.07    py-hatchet/1.3.1
+
+------------------------------------------------- /software/setonix/2024.05/custom/modules/zen3/gcc/12.2.0/custom -------------------------------------------------
+   hipfort/5.7.1    omniperf/1.0.10    omnitrace/1.11.2-rocm-5.2.3
+
+------------------------------------------------------ /opt/cray/pe/lmod/modulefiles/comnet/gnu/8.0/ofi/1.0 -------------------------------------------------------
+   cray-mpich-abi/8.1.25    cray-mpich-abi/8.1.27 (D)    cray-mpich/8.1.25    cray-mpich/8.1.27 (L,D)
+
+----------------------------------------------------------- /opt/cray/pe/lmod/modulefiles/mix_compilers -----------------------------------------------------------
+   amd-mixed/5.7.1         aocc-mixed/4.2.0    cce-mixed/15.0.1    cce-mixed/17.0.0    cce-mixed/18.0.0        gcc-mixed/11.2.0        gcc-native-mixed/12.3 (D)
+   aocc-mixed/3.2.0 (D)    aocc-mixed/5.0.0    cce-mixed/16.0.1    cce-mixed/17.0.1    cce-mixed/18.0.1 (D)    gcc-mixed/12.2.0 (D)    gcc-native-mixed/13.2
+
+--------------------------------------------------------- /opt/cray/pe/lmod/modulefiles/compiler/gnu/8.0 ----------------------------------------------------------
+   cray-hdf5/1.12.2.3    cray-hdf5/1.12.2.7 (D)
+
+------------------------------------------------------- /software/setonix/2024.05/containers/views/modules --------------------------------------------------------
+   alphafold/2.3.0                   clustalo/1.2.4--h87f3376_5         namd3-amd-gfx90a/3.0a9           sambamba/1.0--h98b6b92_0
+   aws-cli/2.13.0                    cp2k-amd-gfx90a/2022.2             openfoam-container/v1912         samtools/1.15--h3843a85_0
+   bamtools/2.5.2--hd03093a_0        cutadapt/3.7--py38hbff2b2d_0       openfoam-container/v2006         spades/3.15.4--h95f258a_0
+   bbmap/38.96--h5c4e2a8_0           diamond/2.0.14--hdcc8f71_0         openfoam-container/v2012         star/2.7.10a--h9ee0642_0
+   bcftools/1.15--haf5b3da_0         fastqc/0.11.9--hdfd78af_1          openfoam-container/v2206         tensorflow/rocm5.6-tf2.12
+   bedtools/2.30.0--h468198e_3       gatk4/4.2.5.0--hdfd78af_0          openfoam-container/v2212  (D)    trimmomatic/0.39--hdfd78af_2
+   blast/2.12.0--pl5262h3289130_0    interproscan/5.56-89.0             openfoam-org-container/7         trinity/2.13.2--hea94271_3
+   bowtie2/2.4.5--py36hd4290be_0     maker/3.01.03--pl5262h8f1cd36_2    openfoam-org-container/8         vcftools/0.1.16--pl5321hd03093a_7
+   bwa-mem2/2.2.1--hd03093a_2        mrbayes/3.2.7--h5465cc4_4          openfoam-org-container/9         velvet/1.2.10--h7132678_5
+   bwa/0.7.17--h7132678_9            mummer/3.23--pl5321h87f3376_14     openfoam-org-container/10 (D)
+   canu/2.2--ha47f30e_0              namd-amd-gfx90a/2.15a2             pytorch/2.2.0-rocm5.7.3
+
+------------------------------------------------------------ /software/setonix/2024.05/pawsey/modules -------------------------------------------------------------
+   shpc/0.1.28                    singularity/4.1.0-askap      singularity/4.1.0-mpi       singularity/4.1.0-nompi        spack/0.21.0
+   singularity/4.1.0-askap-gpu    singularity/4.1.0-mpi-gpu    singularity/4.1.0-nohost    singularity/4.1.0-slurm (D)
+
+--------------------------------------------------------- /opt/cray/pe/lmod/modulefiles/perftools/23.09.0 ---------------------------------------------------------
+   perftools-lite-events    perftools-lite-gpu    perftools-lite-hbm    perftools-lite-loops    perftools-lite    perftools-preload    perftools
+
+------------------------------------------------------------ /opt/cray/pe/lmod/modulefiles/net/ofi/1.0 ------------------------------------------------------------
+   cray-openshmemx/11.5.8    cray-openshmemx/11.6.1 (D)    cray-openshmemx/11.7.0    cray-openshmemx/11.7.1    cray-openshmemx/11.7.2    cray-openshmemx/11.7.3
+
+--------------------------------------------------------- /opt/cray/pe/lmod/modulefiles/cpu/x86-milan/1.0 ---------------------------------------------------------
+   cray-fftw/3.3.10.3    cray-fftw/3.3.10.5 (D)    cray-fftw/3.3.10.6    cray-fftw/3.3.10.7    cray-fftw/3.3.10.8    cray-fftw/3.3.10.9
+
+------------------------------------------------------------- /opt/cray/pe/lmod/lmod/modulefiles/Core -------------------------------------------------------------
+   lmod    settarg
+
+--------------------------------------------------------------- /opt/cray/pe/lmod/modulefiles/core ----------------------------------------------------------------
+   PrgEnv-amd/8.3.3               atp/3.15.3               cray-cti/2.15.14                   cray-pmi/6.1.10               gdb4hpc/4.14.7
+   PrgEnv-amd/8.4.0      (D)      atp/3.15.4               cray-cti/2.16.0                    cray-pmi/6.1.12      (D)      gdb4hpc/4.15.1         (D)
+   PrgEnv-amd/8.5.0               atp/3.15.5               cray-cti/2.17.2                    cray-pmi/6.1.13               gdb4hpc/4.16.0
+   PrgEnv-amd/8.6.0               cce/15.0.1               cray-cti/2.18.1           (D)      cray-pmi/6.1.14               gdb4hpc/4.16.1
+   PrgEnv-aocc/8.3.3              cce/16.0.1        (D)    cray-cti/2.18.2                    cray-pmi/6.1.15               gdb4hpc/4.16.2
+   PrgEnv-aocc/8.4.0     (D)      cce/17.0.0               cray-cti/2.18.3                    cray-python/3.9.13.1          gdb4hpc/4.16.3
+   PrgEnv-aocc/8.5.0              cce/17.0.1               cray-cti/2.18.4                    cray-python/3.10.10  (D)      iobuf/2.0.10
+   PrgEnv-aocc/8.6.0              cce/18.0.0               cray-cti/2.19.0                    cray-python/3.11.5            papi/7.0.0.1
+   PrgEnv-cray-amd/8.3.3          cce/18.0.1               cray-dsmml/0.2.2          (L,D)    cray-python/3.11.7            papi/7.0.1.1           (D)
+   PrgEnv-cray-amd/8.4.0          cpe-cuda/23.03           cray-dsmml/0.3.0                   cray-stat/4.11.13             papi/7.0.1.2
+   PrgEnv-cray-amd/8.5.0          cpe-cuda/23.09    (D)    cray-dyninst/12.1.1                cray-stat/4.12.1     (D)      papi/7.1.0.1
+   PrgEnv-cray-amd/8.6.0 (D)      cpe-cuda/23.12           cray-dyninst/12.3.0       (D)      cray-stat/4.12.2              papi/7.1.0.2
+   PrgEnv-cray/8.3.3              cpe-cuda/24.03           cray-dyninst/12.3.1                cray-stat/4.12.3              papi/7.1.0.4
+   PrgEnv-cray/8.4.0     (D)      cpe-cuda/24.07           cray-dyninst/12.3.2                cray-stat/4.12.4              perftools-base/23.03.0
+   PrgEnv-cray/8.5.0              cpe-cuda/24.11           cray-dyninst/12.3.4                cray-zmqnet/1.0.0             perftools-base/23.09.0 (L,D)
+   PrgEnv-cray/8.6.0              cpe/23.03                cray-libpals/1.2.11                craype/2.7.20                 perftools-base/23.12.0
+   PrgEnv-gnu-amd/8.3.3           cpe/23.09         (D)    cray-libpals/1.2.12       (D)      craype/2.7.23        (L,D)    perftools-base/24.03.0
+   PrgEnv-gnu-amd/8.4.0           cpe/23.12                cray-libsci/23.02.1.1              craype/2.7.30                 perftools-base/24.07.0
+   PrgEnv-gnu-amd/8.5.0           cpe/24.03                cray-libsci/23.09.1.1     (L,D)    craype/2.7.31.11              perftools-base/24.11.0
+   PrgEnv-gnu-amd/8.6.0  (D)      cpe/24.07                cray-libsci_acc/22.12.1.1          craype/2.7.32                 rocm/5.7.1             (D)
+   PrgEnv-gnu/8.3.3               cpe/24.11                cray-libsci_acc/23.09.1.1 (D)      craype/2.7.33                 sanitizers4hpc/1.0.4
+   PrgEnv-gnu/8.4.0      (L,D)    cray-R/4.2.1.1           cray-libsci_acc/23.12.0            craypkg-gen/1.3.28            sanitizers4hpc/1.1.1   (D)
+   PrgEnv-gnu/8.5.0               cray-R/4.2.1.2    (D)    cray-libsci_acc/24.03.1            craypkg-gen/1.3.30   (D)      sanitizers4hpc/1.1.2
+   PrgEnv-gnu/8.6.0               cray-R/4.3.1             cray-libsci_acc/24.07.0            craypkg-gen/1.3.31            sanitizers4hpc/1.1.3
+   PrgEnv-nvidia/8.6.0            cray-R/4.3.2             cray-libsci_acc/24.11.0            craypkg-gen/1.3.32            sanitizers4hpc/1.1.4
+   amd/5.7.1                      cray-R/4.4.0             cray-mrnet/5.0.4                   craypkg-gen/1.3.33            valgrind4hpc/2.12.11
+   aocc/3.2.0            (D)      cray-ccdb/4.12.13        cray-mrnet/5.1.1          (D)      craypkg-gen/1.3.34            valgrind4hpc/2.13.1    (D)
+   aocc/4.2.0                     cray-ccdb/5.0.1   (D)    cray-mrnet/5.1.2                   gcc-native/12.3      (D)      valgrind4hpc/2.13.2
+   aocc/5.0.0                     cray-ccdb/5.0.2          cray-mrnet/5.1.3                   gcc-native/13.2               valgrind4hpc/2.13.3
+   atp/3.14.18                    cray-ccdb/5.0.3          cray-mrnet/5.1.4                   gcc/10.3.0                    valgrind4hpc/2.13.4
+   atp/3.15.1            (D)      cray-ccdb/5.0.4          cray-pals/1.2.11                   gcc/11.2.0
+   atp/3.15.2                     cray-ccdb/5.0.5          cray-pals/1.2.12          (D)      gcc/12.2.0           (L,D)
+
+------------------------------------------------------ /opt/cray/pe/lmod/modulefiles/craype-targets/default -------------------------------------------------------
+   craype-accel-amd-gfx908    craype-accel-nvidia80    craype-hugepages256M    craype-hugepages512M        craype-network-ucx        craype-x86-spr-hbm
+   craype-accel-amd-gfx90a    craype-arm-grace         craype-hugepages2G      craype-hugepages64M         craype-x86-genoa          craype-x86-spr
+   craype-accel-amd-gfx940    craype-hugepages128M     craype-hugepages2M      craype-hugepages8M          craype-x86-milan-x        craype-x86-trento
+   craype-accel-host          craype-hugepages16M      craype-hugepages32M     craype-network-none         craype-x86-milan   (L)
+   craype-accel-nvidia70      craype-hugepages1G       craype-hugepages4M      craype-network-ofi   (L)    craype-x86-rome
+
+--------------------------------------------------------------------- /opt/pawsey/modulefiles ---------------------------------------------------------------------
+   pawsey (L)    pawseyenv/2023.08    pawseyenv/2024.05 (L,D)    pawseyenv/2025.03
+
+------------------------------------------------------------------ /software/pawsey/modulefiles -------------------------------------------------------------------
+   arm-forge/22.0.4    arm-forge/22.1.2 (D)    arm-forge/24.0.3    pawseytools (L)    slurm/21.08.8-2    slurm/22.05.2 (D)
+
+---------------------------------------------------------------------- /opt/cray/modulefiles ----------------------------------------------------------------------
+   cray-lustre-client-ofed/2.15.1.2_cray_70_g6956d9a-1.0_8.1__g6956d9aa81.shasta        rocm/5.7.1
+   libfabric/1.15.2.0                                                            (L)    xpmem/2.8.4-1.0_7.23__ga37cbd9.shasta (L)
+
+  Where:
+   D:  Default Module
+   L:  Module is loaded
+
+If the avail list is too long consider trying:
+
+"module --default avail" or "ml -d av" to just list the default modules.
+"module overview" or "ml ov" to display the number of modules for each name.
+
+Use "module spider" to find all possible modules and extensions.
+Use "module keyword key1 key2 ..." to search for all possible modules matching any of the "keys".
+
+
