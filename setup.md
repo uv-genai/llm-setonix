@@ -53,16 +53,8 @@ accessible from `~/.local/lib/python3.13`:
 
 `ln -sf ~/.local/lib64/python3.13/lib-dynload ~/.local/lib/python3.13/lib-dynload`.
 
-## 2. Install Podman
 
-Just download the static Podman archive from here: https://github.com/containers/podman/releases 
-Upack and move the executable in the `bin` directory to a directory
-in the `PATH` env variable after renaming the executable to `podman`.
-
-Podman is not required for serving the models but it will be used to convert between tensor formats
-later and to run vector databases and other services used to customise the models.
-
-## 3. Install Ollama
+## 2. Install Ollama
 
 Download the version for your system from here: https://github.com/ollama/ollama/blob/main/docs/linux.md
 
@@ -114,7 +106,7 @@ in exceeding the quota when downloading models.
 You can either create a symbolic link to a path on a separate filesystem or specify the
 model path trough the OLLAMA_MODELS environment variable.
 
-## 4. Install llama.cpp
+## 3. Install llama.cpp
 
 llama.cpp is the only inference engine that supports all the accelerator
 architectures including Vulkan which allows to mix GPUs and CPUs from different
