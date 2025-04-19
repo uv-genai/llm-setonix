@@ -1,7 +1,7 @@
-# Setup a GenAI environment
+# GenAI environment configuation
 
-This document shows how to setup a GenAI development environment
-on the GPU nodes of the Setonix Cray-EX supercomputer at the 
+This document explain how to setup a GenAI development environment
+on the GPU nodes of the Setonix Cray-EX supercomputer at the
 Pawsey Surpercomputing Centre.
 Since all the packages need to be built and installed from scratch
 in the home directory the instructions should be generic enough
@@ -25,15 +25,23 @@ multiple nodes.
 All the platforms expose both a chat and an OpenAI compatible
 endpoint.
 
-SGLang does not work at the moment with the latest version of 
-PyTorch and Python 3.13.
+SGLang and vLLM do not work at the moment on AMD MI 250X GPUs, all the
+containers and configuraitons avaiable only support the `gfx342`
+platform i.e. MI300 class GPUs and in the case of vLLM only ROCm
+versions 6.3 and above are supported.
+
+Becaise SGLang and vLLM are not supported on MI200X GPUs and
+ROCm 6.3 or above versions are not avaiable no model can be
+distributed on multiple GPUs.
 
 ## 1. Install Python
 
 A recent version of Python is required to guarantee that all
 the packages work properly.
 
-At the time of this writing Python 3.13.3 is the latest version.
+At the time of this writing Python 3.13.3 is the latest version but
+because SGLang and other packages still rely on 3.12 is better to install
+the previous version.
 
 Since on shared systems Python cannot be installed using a package manager
 it needs to be build from source code.
@@ -42,16 +50,16 @@ Procedure to follow on Cray systems after having downloaded and unpacked
 the python source archive downloaded from https://www.python.org/downloads/source/
 to install Python and `pip` nder `~/.local`:
 
-1. `module load ProgEnv-gnu`
-2. `cd Python-3.13.3`
-3. `./configure --prefix=~/.local -enable-optimizations --with-lto=full --prefix=$PWD/run --with-ensurepip --libdir=$PWD/run/lib`
-4. `make -j $(nproc)`
+1. `module load gcc`
+2. `cd Python-3.12.9`
+3. `./configure --prefix=$HOME/.local -enable-optimizations --with-lto=full --with-ensurepip`
+4. `make -j 32`
 5. `make install`
 
 In order to find the `_posixsubprocess` package you need to make the `lib-dynload` directory
-accessible from `~/.local/lib/python3.13`:
+accessible from `~/.local/lib/python3.12`:
 
-`ln -sf ~/.local/lib64/python3.13/lib-dynload ~/.local/lib/python3.13/lib-dynload`.
+`ln -sf ~/.local/lib64/python3.12/lib-dynload ~/.local/lib/python3.12/lib-dynload`.
 
 
 ## 2. Install Ollama
@@ -90,7 +98,7 @@ After having installed the cpu/NVIDIA version, download the ROCm version:
 
 Copy files from the `ollama` directory into destination directory.
 
-`cp -r lib/ollama/* ~/.local/lib/ollama`  
+`cp -r lib/ollama/* ~/.local/lib/ollama`
 
 
 ### Run
@@ -117,7 +125,7 @@ the configuration according to your needs.
 
 ### AMD MI GPUs
 
-1. Load the relevant modules, in my case:
+1. Load the relevant modules:
 
 ```
 module load gcc/12.2.0
@@ -189,6 +197,7 @@ to link `$HOME/.cache` to a directory in a separate filesystem to avoid exceedin
 the quota.
 
 
+
 ## WARNING: Incompatibilities between llama.cpp and ollama
 
 At the time of this writing (April 2025), the GPU version of `ollama` is incompatible 
@@ -250,4 +259,14 @@ llama_init_from_model:      ROCm6 compute buffer size =  2322.01 MiB
 llama_init_from_model:      ROCm7 compute buffer size =  2322.02 MiB
 llama_init_from_model:  ROCm_Host compute buffer size =    78.02 MiB
 ```
+## Errors when building SGLang container
 
+The standard ROCm SGLang containers is configured to work
+onlyt with gfx342 hardware, trying to switch to gfx90a
+results in many errors like the following:
+```
+In file included from /sgl-workspace/aiter/aiter/jit/build/ck/include/ck_tile/ops/flatmm/block/flatmm_32x512x128_1x4x1_16x16x32_hip.hpp:461:
+/sgl-workspace/aiter/aiter/jit/build/ck/include/ck_tile/ops/flatmm/block/uk/flatmm_uk_gfx9_32x512x128_1x1x1_16x16x16.inc:671:5: error: instruction not supported on this GPU
+  671 |     _UK_PIPELINE_0(_UK_GLD_A0, _UK_GLD_A1, _UK_GLD_A2, _UK_GLD_A3, _UK_GLD_A4, _UK_GLD_A5, _UK_GLD_A6, _UK_GLD_A7_AND_L1 ,
+      |     ^
+```
