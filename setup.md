@@ -30,9 +30,25 @@ containers and configuraitons avaiable only support the `gfx342`
 platform i.e. MI300 class GPUs and in the case of vLLM only ROCm
 versions 6.3 and above are supported.
 
-Becaise SGLang and vLLM are not supported on MI200X GPUs and
+Because SGLang and vLLM are not supported on MI200X GPUs and
 ROCm 6.3 or above versions are not avaiable no model can be
 distributed on multiple GPUs.
+
+In general it is not possible to create working GenAI environments
+on systems with Singularity because web services need to be run
+with additional privileges, not to mention a command line interface
+different form podman and docker which makes it had to use pre-existing
+recipes not to mention the lack of health check tools (--healthcheck-*).
+
+TODO: Check singularity.conf options.
+
+SLURM is ok for development but cannot be used to serve production workloads
+since the auto-scaling features provided by Kuberneted are required.
+
+For reference when trying to run a web service (engine) through Singularity on Setonix
+without sudo you get:
+`bind() to 0.0.0.0:80 failed (13: Permission denied)`.
+
 
 ## 1. Install Python
 
