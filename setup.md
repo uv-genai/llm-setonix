@@ -40,12 +40,10 @@ with additional privileges, not to mention a command line interface
 different form podman and docker which makes it had to use pre-existing
 recipes not to mention the lack of health check tools (--healthcheck-*).
 
-TODO: Check singularity.conf options.
-
 SLURM is ok for development but cannot be used to serve production workloads
 since the auto-scaling features provided by Kuberneted are required.
 
-For reference when trying to run a web service (engine) through Singularity on Setonix
+For reference when trying to run a web service (e.g. nginx) through Singularity on Setonix
 without sudo you get:
 `bind() to 0.0.0.0:80 failed (13: Permission denied)`.
 
@@ -56,7 +54,7 @@ A recent version of Python is required to guarantee that all
 the packages work properly.
 
 At the time of this writing Python 3.13.3 is the latest version but
-because SGLang and other packages still rely on 3.12 is better to install
+because SGLang and other packages still rely on 3.12 it is better to install
 the previous version.
 
 Since on shared systems Python cannot be installed using a package manager
@@ -72,7 +70,7 @@ to install Python and `pip` nder `~/.local`:
 4. `make -j 32`
 5. `make install`
 
-In order to find the `_posixsubprocess` package you need to make the `lib-dynload` directory
+In order to find the `_posixsubprocess` package you need to make the `lib64/lib-dynload` directory
 accessible from `~/.local/lib/python3.12`:
 
 `ln -sf ~/.local/lib64/python3.12/lib-dynload ~/.local/lib/python3.12/lib-dynload`.
@@ -106,7 +104,7 @@ up to 32 billion parameters at above 4 tokens/second without any optimisation.
 
 ### AMD GPU version
 
-After having installed the cpu/NVIDIA version, download the ROCm version:
+After having installed the CPU/NVIDIA version, download the ROCm version:
 
 `curl -L https://ollama.com/download/ollama-linux-amd64-rocm.tgz -o ollama-linux-amd64-rocm.tgz`
 
@@ -119,7 +117,7 @@ Copy files from the `ollama` directory into destination directory.
 
 ### Run
 
-`salloc -p gpu-dev --gres=gpu:8 --account=pawsey0001-gpu`
+`salloc --mem=0 -p gpu-dev --gres=gpu:8 --account=pawsey0001-gpu`
 
 `ollama serve &`
 
@@ -174,15 +172,11 @@ architectures consult this page: https://rocm.docs.amd.com/en/latest/reference/g
 
 Allocate GPU node:
 
-`salloc -p gpu-dev --gres=gpu:8 --account=pawsey0001-gpu`
+`salloc --mem=0 -p gpu-dev --gres=gpu:8 --account=pawsey0001-gpu`
 
 Run model:
 
-llama-cli -hf MaziyarPanahi/Meta-Llama-3.1-70B-Instruct-GGUF -ngl 9999`
-
-Run model:
-
-`llama-cli -hf MaziyarPanahi/Meta-Llama-3.1-70B-Instruct-GGUF -ngl 9999`
+`llama-cli -hf MaziyarPanahi/Meta-Llama-3.1-70B-Instruct-GGUF -ngl 999`
 
 `-ngl 999`: simply tries to upload as many layers as possible on the GPU.
 
@@ -278,8 +272,8 @@ llama_init_from_model:  ROCm_Host compute buffer size =    78.02 MiB
 ## Errors when building SGLang container
 
 The standard ROCm SGLang containers is configured to work
-onlyt with gfx342 hardware, trying to switch to gfx90a
-results in many errors like the following:
+onlyt with gfx942 hardware, trying to switch to gfx90a
+results in many errors like the following one:
 ```
 In file included from /sgl-workspace/aiter/aiter/jit/build/ck/include/ck_tile/ops/flatmm/block/flatmm_32x512x128_1x4x1_16x16x32_hip.hpp:461:
 /sgl-workspace/aiter/aiter/jit/build/ck/include/ck_tile/ops/flatmm/block/uk/flatmm_uk_gfx9_32x512x128_1x1x1_16x16x16.inc:671:5: error: instruction not supported on this GPU
