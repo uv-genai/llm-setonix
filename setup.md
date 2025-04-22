@@ -7,7 +7,7 @@ Since all the packages need to be built and installed from scratch
 in the home directory the instructions should be generic enough
 to apply to any other Linux cluster.
 
-The main component of an GenAI environment is the inference platform
+The main component of axn GenAI environment is the inference platform
 to serve the models.
 
 In this document we are going to cover the installation and usage of
@@ -21,7 +21,7 @@ because of issues with the containers environment (Singularity instead of
 Podman/Docker), the ROCm version (>= 6.2 required) and the lack of support
 for the gfx90a (MI250) platform in the case of *SGLang*.
 
-Given the fac that the currently biggest model (DeepSeek-r1) can
+Given the fact that the currently biggest model (DeepSeek-r1) can
 ran on a single node at a reasonable speed it might not be
 required to use SGLang or vLLM to distribute a model on
 multiple nodes.
@@ -46,23 +46,40 @@ One option is to run the model serving service on Setonix and connect
 to it from another system through an ssh tunnel, installing all the
 required tools elsewhere.
 
+Ollama requires two processes to run a client and a server but
+it's easier to use because it can use its own models dwnloaded
+from the ollama site.
+
+llama.cpp is the only platform that works with any acceleration
+infrastructure from Vulkan to Metal and SYCL and only requires
+a single process running an It does however only support models
+in the =gguf= format which requires in most cases downloading
+the models from Huggingface and converting it with the
+=convert_hf_to_gguf_update= tool.
+
+llama.cpp is in general faster than ollama.
+
+This article shows how to install both ollama and llama.cpp but
+only one is required to serve the models.
+
+
 ## 1. Install Python
 
 A recent version of Python is required to guarantee that all
 the packages work properly.
 
 At the time of this writing Python 3.13.3 is the latest version but
-because SGLang and other packages still rely on 3.12 it is better to install
+because and other tools like llama.cpp  still rely on 3.12 it is better to install
 the previous version.
 
 Since on shared systems Python cannot be installed using a package manager
 it needs to be build from source code.
 
-Procedure to follow on Cray systems after having downloaded and unpacked
+Procedure to follow after having downloaded and unpacked
 the python source archive downloaded from https://www.python.org/downloads/source/
-to install Python and `pip` nder `~/.local`:
+to install Python and `pip` under `~/.local`:
 
-1. `module load gcc`
+1. `module load gcc` (Cray)
 2. `cd Python-3.12.9`
 3. `./configure --prefix=$HOME/.local -enable-optimizations --with-lto=full --with-ensurepip`
 4. `make -j 32`
@@ -77,6 +94,11 @@ accessible from `~/.local/lib/python3.12`:
 ## 2. Install Ollama
 
 Download the version for your system from here: https://github.com/ollama/ollama/blob/main/docs/linux.md
+
+**WARNING**: the models are by default stored under `$HOME/.ollama` which will
+result in exceeding the quota when downloading models.
+You can either create a symbolic link to a path on a separate filesystem or
+specify the model path trough the OLLAMA_MODELS environment variable.
 
 ### Basic installation
 
@@ -121,10 +143,6 @@ Copy files from the `ollama` directory into destination directory.
 
 `ollama run deepseek-r1:671b --verbose`
 
-**IMPORTANT**: the models are by default stored under `$HOME/.ollama` which will
-result in exceeding the quota when downloading models.
-You can either create a symbolic link to a path on a separate filesystem or
-specify the model path trough the OLLAMA_MODELS environment variable.
 
 ## 3. Install llama.cpp
 
@@ -138,23 +156,27 @@ llama.cpp requires only one.
 Docker containers exist but it's normally better to build from source to customise
 the configuration according to your needs.
 
+**WARNING**: `llama.cpp` stores models inside `$HOME/.cache` it is therefore required
+to link `$HOME/.cache` to a directory in a separate filesystem to avoid exceeding
+the quota.
+
 ### AMD MI GPUs
 
-1. Load the relevant modules:
+**1. Load the relevant modules (gcc and rocm, or possibly only rocm)**:
 
 ```
 module load gcc/12.2.0
 module load rocm/5.7.3
 ```
 
-2. Set the path to the C and  C++ compilers
+**2. Set the path to the C and  C++ compilers**
 
 ```
 export CC=/opt/cray/pe/gcc/12.2.0/snos/bin/gcc
 export CC++=/opt/cray/pe/gcc/12.2.0/snos/bin/g++
 ```
 
-3. Invoke cmake
+**3. Invoke cmake**
 
 ```
 HIPCXX="$(hipconfig -l)/clang" HIP_PATH="$(hipconfig -R)" \
@@ -165,11 +187,11 @@ HIPCXX="$(hipconfig -l)/clang" HIP_PATH="$(hipconfig -R)" \
 `gfx90a` matches the MI 250x architecture, for a list of all the supported
 architectures consult this page: https://rocm.docs.amd.com/en/latest/reference/gpu-arch-specs.html  
 
-4. Install
+**4. Install**
 
 `cmake --install ./build`
 
-5. Install commmand line tools
+**5. Install commmand line tools**
 
 The models read by llama.cpp need to be in =gguf= format which in many cases
 requires conversion from the =safetensors= format used by most models
@@ -190,7 +212,7 @@ The tools include:
 * convert_llama_ggml_to_gguf convert from ggml tensors to gguf
 * convert_lora_to_gguf convert LoRA finetuned model to gguf
 
-6. Run
+**6. Run**
 
 Allocate GPU node:
 
@@ -224,10 +246,47 @@ ggml_cuda_init: found 8 ROCm devices:
   Device 7: AMD Instinct MI250X, gfx90a:sramecc+:xnack- (0x90a), VMM: no, Wave Size: 64
 ```
 
-*IMPORTANT*: `llama.cpp` stores models inside `$HOME/.cache` it is therefore required
-to link `$HOME/.cache` to a directory in a separate filesystem to avoid exceeding
-the quota.
+##4. Use models from Hugginface with llama.cpp
 
+When using llama.cpp you need to use models from Huggingface and convert the
+non-gguf ones (most of them) to the =gguf= format.
+
+Create a Hugginface account first and generate an access token.
+
+Install the huggingface command line:
+
+`pip install -U "huggingface_hub[cli]`
+
+To download a model from Huggingface:
+    1. go to the Huggingface website and navigate to the model you want to download
+    2. make sure to accept the terms and condtions for the model which might require
+    to wait for permission to use it
+    3. log into Huggingface using `huggingface-cli login`
+    4. run `huggingface-cli download <model name>`
+
+By default the model is downloaded into the =~/.cache/huggingface= directory,
+using a specific format suitable for consumption through the Huggingface API,
+to make sure the model is downloaed in the proper format for llama to work
+use the command line:
+
+`huggingface-cli download <model name> --local-dir <local dir> --include "*"`
+
+E.g.
+
+`huggingface-cli download google/gemma-3-4b-it --local-dir gemma3-4b-model --include "*"`
+
+Before downloading the model look for =gguf= models on Huggingface, *unsloth* does
+normally have the latest ones available.
+
+Convert the model to =gguf=:
+
+`python3 llama.cpp/convert_hf_to_gguf.py gemma3-4b-model --outfile gemma3-4b.gguf`
+
+The model can now be run through llama.cpp:
+
+`llama-cli -m gemma3-4b.gguf`
+
+Optionally quantise the model to reduce the size using `llama-quantize`.
 
 
 ## WARNING: Incompatibilities between llama.cpp and ollama
@@ -235,7 +294,7 @@ the quota.
 At the time of this writing (April 2025), the GPU version of `ollama` is incompatible 
 with the GPU version of `llama.cpp` and therefore the `llama.cpp` files must not be 
 in `PATH` and `LD_LIBRARY_PATH` when running `ollama`.
-It is better to install `llama.cpp` in it's own directory and add paths to 
+It is better to install `llama.cpp` in it's own directory and add paths to
 the environment variables when needed.
 
 
