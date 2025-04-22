@@ -8,14 +8,18 @@ in the home directory the instructions should be generic enough
 to apply to any other Linux cluster.
 
 The main component of an GenAI environment is the inference platform
-to server the models.
+to serve the models.
 
 In this document we are going to cover the installation and usage of
 the following serving platforms:
 1. ollama
 2. llama.cpp
-3. SGLang
-4. vLLM
+
+The advanced platforms such as *SGLang* and *vLLM* that should be faster
+and allow models to be distributed on multiple nodes are not available
+because of issues with the containers environment (Singularity instead of
+Podman/Docker), the ROCm version (>= 6.2 required) and the lack of support
+for the gfx90a (MI250) platform in the case of *SGLang*.
 
 Given the fac that the currently biggest model (DeepSeek-r1) can
 ran on a single node at a reasonable speed it might not be
@@ -25,28 +29,22 @@ multiple nodes.
 All the platforms expose both a chat and an OpenAI compatible
 endpoint.
 
-SGLang and vLLM do not work at the moment on AMD MI 250X GPUs, all the
-containers and configuraitons avaiable only support the `gfx342`
-platform i.e. MI300 class GPUs and in the case of vLLM only ROCm
-versions 6.3 and above are supported.
-
-Because SGLang and vLLM are not supported on MI200X GPUs and
-ROCm 6.3 or above versions are not avaiable no model can be
-distributed on multiple GPUs.
-
 In general it is not possible to create working GenAI environments
 on systems with Singularity because web services need to be run
 with additional privileges, not to mention a command line interface
 different form podman and docker which makes it had to use pre-existing
-recipes not to mention the lack of health check tools (--healthcheck-*).
+recipes and the lack of health check tools (--healthcheck-*).
 
 SLURM is ok for development but cannot be used to serve production workloads
 since the auto-scaling features provided by Kuberneted are required.
 
-For reference when trying to run a web service (e.g. nginx) through Singularity on Setonix
-without sudo you get:
+For reference when trying to run a web service (e.g. nginx) through
+Singularity on Setonix without sudo you get:
 `bind() to 0.0.0.0:80 failed (13: Permission denied)`.
 
+One option is to run the model serving service on Setonix and connect
+to it from another system through an ssh tunnel, installing all the
+required tools elsewhere.
 
 ## 1. Install Python
 
@@ -123,16 +121,19 @@ Copy files from the `ollama` directory into destination directory.
 
 `ollama run deepseek-r1:671b --verbose`
 
-**IMPORTANT**: the models are by default stored under `$HOME/.ollama` which will result
-in exceeding the quota when downloading models.
-You can either create a symbolic link to a path on a separate filesystem or specify the
-model path trough the OLLAMA_MODELS environment variable.
+**IMPORTANT**: the models are by default stored under `$HOME/.ollama` which will
+result in exceeding the quota when downloading models.
+You can either create a symbolic link to a path on a separate filesystem or
+specify the model path trough the OLLAMA_MODELS environment variable.
 
 ## 3. Install llama.cpp
 
 llama.cpp is the only inference engine that supports all the accelerator
 architectures including Vulkan which allows to mix GPUs and CPUs from different
 vendors.
+
+Also while ollama requires two processes to run, the server and the client,
+llama.cpp requires only one.
 
 Docker containers exist but it's normally better to build from source to customise
 the configuration according to your needs.
@@ -168,7 +169,28 @@ architectures consult this page: https://rocm.docs.amd.com/en/latest/reference/g
 
 `cmake --install ./build`
 
-5. Run
+5. Install commmand line tools
+
+The models read by llama.cpp need to be in =gguf= format which in many cases
+requires conversion from the =safetensors= format used by most models
+on Huggingface.
+
+To build all the tools =cd= into llama.cpp git repository and run the
+following commands:
+
+```
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements
+```
+
+The tools include:
+
+* convert_hf_to_gguf convert from safetensors Hugginface model to gguf
+* convert_llama_ggml_to_gguf convert from ggml tensors to gguf
+* convert_lora_to_gguf convert LoRA finetuned model to gguf
+
+6. Run
 
 Allocate GPU node:
 
@@ -217,7 +239,7 @@ It is better to install `llama.cpp` in it's own directory and add paths to
 the environment variables when needed.
 
 
-## Ollama - memory usage 
+## Ollama - memory usage
 
 This is the memory used to store the current biggest open model DeepSeek-r1 with
 671 billion parameters on the GPUs
