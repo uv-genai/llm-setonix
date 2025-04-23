@@ -7,7 +7,7 @@ Since all the packages need to be built and installed from scratch
 in the home directory the instructions should be generic enough
 to apply to any other Linux cluster.
 
-The main component of axn GenAI environment is the inference platform
+The main component of any GenAI environment is the inference platform
 to serve the models.
 
 In this document we are going to cover the installation and usage of
@@ -21,6 +21,11 @@ because of issues with the containers environment (Singularity instead of
 Podman/Docker), the ROCm version (>= 6.2 required) and the lack of support
 for the gfx90a (MI250) platform in the case of *SGLang*.
 
+llama.cpp has recently introduced the ability to perform distributed
+inference by re-compiling with a specific clag but I was not able to test it yes 
+and the documentaiton convers only CUDA.
+See [here](https://github.com/ggml-org/llama.cpp/tree/master/examples/rpc).
+
 Given the fact that the currently biggest model (DeepSeek-r1) can
 ran on a single node at a reasonable speed it might not be
 required to use SGLang or vLLM to distribute a model on
@@ -32,7 +37,7 @@ endpoint.
 In general it is not possible to create working GenAI environments
 on systems with Singularity because web services need to be run
 with additional privileges, not to mention a command line interface
-different form podman and docker which makes it had to use pre-existing
+different from podman and docker which makes it hard to use pre-existing
 recipes and the lack of health check tools (--healthcheck-*).
 
 SLURM is ok for development but cannot be used to serve production workloads
@@ -46,13 +51,13 @@ One option is to run the model serving service on Setonix and connect
 to it from another system through an ssh tunnel, installing all the
 required tools elsewhere.
 
-Ollama requires two processes to run a client and a server but
+Ollama requires two processes to run: a client and a server but
 it's easier to use because it can use its own models dwnloaded
 from the ollama site.
 
 llama.cpp is the only platform that works with any acceleration
 infrastructure from Vulkan to Metal and SYCL and only requires
-a single process running an It does however only support models
+a single process running. It does however only support models
 in the =gguf= format which requires in most cases downloading
 the models from Huggingface and converting it with the
 =convert_hf_to_gguf_update= tool.
@@ -69,11 +74,11 @@ A recent version of Python is required to guarantee that all
 the packages work properly.
 
 At the time of this writing Python 3.13.3 is the latest version but
-because and other tools like llama.cpp  still rely on 3.12 it is better to install
+because some tools like llama.cpp still rely on 3.12 it is better to install
 the previous version.
 
 Since on shared systems Python cannot be installed using a package manager
-it needs to be build from source code.
+it needs to be built from source code.
 
 Procedure to follow after having downloaded and unpacked
 the python source archive downloaded from https://www.python.org/downloads/source/
@@ -141,7 +146,7 @@ Copy files from the `ollama` directory into destination directory.
 
 `ollama serve &`
 
-`ollama run deepseek-r1:671b --verbose`
+`ollama run deepseek-r1:671b --verbose` Use a smaller model for testing.
 
 
 ## 3. Install llama.cpp
@@ -154,17 +159,24 @@ Also while ollama requires two processes to run, the server and the client,
 llama.cpp requires only one.
 
 Docker containers exist but it's normally better to build from source to customise
-the configuration according to your needs.
+the configuration according to your needs and in any case with Singularity it
+won't be possible to access llama.cpp through the REST endpoints.
 
 **WARNING**: `llama.cpp` stores models inside `$HOME/.cache` it is therefore required
 to link `$HOME/.cache` to a directory in a separate filesystem to avoid exceeding
 the quota.
 
+Start by cloning the git repository:
+
+`git clone https://github.com/ggml-org/llama.cpp.git`
+
 ### AMD MI GPUs
 
-**1. Load the relevant modules (gcc and rocm, or possibly only rocm)**:
+
+**1. Load the relevant modules**:
 
 ```
+module load cmake/3.27.7
 module load gcc/12.2.0
 module load rocm/5.7.3
 ```
@@ -178,10 +190,14 @@ export CC++=/opt/cray/pe/gcc/12.2.0/snos/bin/g++
 
 **3. Invoke cmake**
 
+Because of incompatibilites with ollama it is better to install
+llama.cpp in a directory not in PATH and activate as needed;
+to install under `~/.opt/llama.cpp` you can use the following command line
+
 ```
 HIPCXX="$(hipconfig -l)/clang" HIP_PATH="$(hipconfig -R)" \
-    cmake -S . -B build -DGGML_HIP=ON -DAMDGPU_TARGETS=gfx90a -DCMAKE_INSTALL_PREFIX=~/.local -DCMAKE_BUILD_TYPE=Release \
-    && cmake --build build  --config Release -- -j 16
+    cmake -S . -B build-rocm -DGGML_HIP=ON -DAMDGPU_TARGETS=gfx90a -DCMAKE_INSTALL_PREFIX=~/.opt/llama.cpp -DCMAKE_BUILD_TYPE=Release \
+    && cmake --build build-rocm --config Release -- -j 32
 ```
 
 `gfx90a` matches the MI 250x architecture, for a list of all the supported
@@ -208,9 +224,9 @@ pip install -r requirements
 
 The tools include:
 
-* convert_hf_to_gguf convert from safetensors Hugginface model to gguf
-* convert_llama_ggml_to_gguf convert from ggml tensors to gguf
-* convert_lora_to_gguf convert LoRA finetuned model to gguf
+* =convert_hf_to_gguf.py= convert from safetensors Hugginface model to gguf
+* =convert_llama_ggml.py=_to_gguf convert from ggml tensors to gguf
+* =convert_lora_to_gguf.py= convert LoRA finetuned model to gguf
 
 **6. Run**
 
@@ -225,6 +241,10 @@ Run model:
 `-ngl 999`: simply tries to upload as many layers as possible on the GPU.
 
 `-hf`: download the model from Huggingface.
+
+If the loading time is too long try to add the `--no-mmap` switch
+to the command line, note however tha if the model is too big it won't
+fit in memory without =mmap= enabled and loading will fail.
 
 Here is the output showing the use of 8 GPUs.
 
@@ -287,6 +307,16 @@ The model can now be run through llama.cpp:
 `llama-cli -m gemma3-4b.gguf`
 
 Optionally quantise the model to reduce the size using `llama-quantize`.
+
+## Limitations of gfx90a architecture
+
+The AMD MI250 GPUs do not support natively 4 and 6 bit types and therefore
+it is not possible to use the quantised models, attempts to do so
+will result in the following warning:
+
+`load_tensors: tensor 'token_embd.weight' (q4_K) (and 0 others) cannot be used with preferred buffer type ROCm_Host, using CPU instead`
+
+gfx942 and above is required to make use of the smaller quantised models.
 
 
 ## WARNING: Incompatibilities between llama.cpp and ollama
@@ -360,4 +390,25 @@ In file included from /sgl-workspace/aiter/aiter/jit/build/ck/include/ck_tile/op
 /sgl-workspace/aiter/aiter/jit/build/ck/include/ck_tile/ops/flatmm/block/uk/flatmm_uk_gfx9_32x512x128_1x1x1_16x16x16.inc:671:5: error: instruction not supported on this GPU
   671 |     _UK_PIPELINE_0(_UK_GLD_A0, _UK_GLD_A1, _UK_GLD_A2, _UK_GLD_A3, _UK_GLD_A4, _UK_GLD_A5, _UK_GLD_A6, _UK_GLD_A7_AND_L1 ,
       |     ^
+```
+
+## Scripts to activate/deactivate llama.cpp
+
+Assuming llama.cpp is installed under =~/.opt/llama.cpp=
+you can =source= the following scripts to activate/deactivate it:
+
+Activate:
+```
+module load rocm
+export BEFORE_LLAMA_CPP_PATH=$PATH
+export BEFORE_LLAMA_CPP_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+export PATH=~/.opt/llama.cpp/bin:$PATH
+export LD_LIBRARY_PATH=~/.opt/llama.cpp/lib64:$LD_LIBRARY_PATH
+```
+
+De-activate:
+```
+export PATH=$BEFORE_LLAMA_CPP_PATH
+export LD_LIBRARY_PATH=$BEFORE_LLAMA_CPP_LD_LIBRARY_PATH
+module unload rocm
 ```
