@@ -185,7 +185,7 @@ module load rocm/5.7.3
 
 ```
 export CC=/opt/cray/pe/gcc/12.2.0/snos/bin/gcc
-export CC++=/opt/cray/pe/gcc/12.2.0/snos/bin/g++
+export CCXX=/opt/cray/pe/gcc/12.2.0/snos/bin/g++
 ```
 
 **3. Invoke cmake**
@@ -236,11 +236,13 @@ Allocate GPU node:
 
 Run model:
 
-`llama-cli -hf MaziyarPanahi/Meta-Llama-3.1-70B-Instruct-GGUF -ngl 999`
+`llama-cli -hf MaziyarPanahi/Meta-Llama-3.1-70B-Instruct-GGUF -ngl 999 -cnv`
 
 `-ngl 999`: simply tries to upload as many layers as possible on the GPU.
 
 `-hf`: download the model from Huggingface.
+
+`-cnv`: conversation (interactive) mode.
 
 If the loading time is too long try to add the `--no-mmap` switch
 to the command line, note however tha if the model is too big it won't
@@ -277,6 +279,10 @@ Install the huggingface command line:
 
 `pip install -U "huggingface_hub[cli]`
 
+To speed up donwload also install =hf_xet=
+
+`pip install hf_xet`
+
 To download a model from Huggingface:
     1. go to the Huggingface website and navigate to the model you want to download
     2. make sure to accept the terms and condtions for the model which might require
@@ -304,7 +310,7 @@ Convert the model to =gguf=:
 
 The model can now be run through llama.cpp:
 
-`llama-cli -m gemma3-4b.gguf`
+`llama-cli -m gemma3-4b.gguf -cnv`
 
 Optionally quantise the model to reduce the size using `llama-quantize`.
 
@@ -412,3 +418,27 @@ export PATH=$BEFORE_LLAMA_CPP_PATH
 export LD_LIBRARY_PATH=$BEFORE_LLAMA_CPP_LD_LIBRARY_PATH
 module unload rocm
 ```
+
+## Parsing local llama.cpp file names
+
+When downloading models from Higgingface with the =hf= switch
+the files are stored under `~/.cache/llama.cpp`.
+
+When running again llama.cpp to load a cached model you need
+to use the same name used when downloading from Huggingface.
+
+The Huggingface GGUF model name format is as follows:
+
+`<provider>/<model name>-GGUF:<quantisation>`
+
+E.g:
+
+`unsloth/gemma-3-4b-it-GGUF:Q8_0`
+
+translated by llama.cpp to
+
+`<provider>_<model name>-GGUF_<model name>-<quantisation>`
+
+E.g:
+
+`unsloth_gemma-3-4b-it-GGUF_gemma-3-4b-it-Q8_0`
