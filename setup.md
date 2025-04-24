@@ -1,4 +1,4 @@
-# GenAI environment configuation
+# GenAI environment configuration notes
 
 This document explain how to setup a GenAI development environment
 on the GPU nodes of the Setonix Cray-EX supercomputer at the
@@ -67,6 +67,8 @@ llama.cpp is in general faster than ollama.
 This article shows how to install both ollama and llama.cpp but
 only one is required to serve the models.
 
+A note on dataset size: datasets can be huge, the full =unlsoth/DeepSeek-V3=
+one with all the quantised models is about 5.1 TB.
 
 ## 1. Install Python
 
@@ -451,7 +453,7 @@ parallel inference on multiple nodes using the `--rpc` switch.
 To build llama.cpp with RPC support simply add `-DGGML_RPC=ON` to
 the CMake command line switches.
 
-To run on additional nodes start the server on the nodes with
+To run on remote nodes start the server on the nodes with
 
 `rpc-server -p 6666 -c`
 
