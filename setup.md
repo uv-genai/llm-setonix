@@ -442,3 +442,21 @@ translated by llama.cpp to
 E.g:
 
 `unsloth_gemma-3-4b-it-GGUF_gemma-3-4b-it-Q8_0`
+
+## Running distributed inference workloads
+
+llama.cpp has recently introduced the option of performing
+parallel inference on multiple nodes using the `--rpc` switch.
+
+To build llama.cpp with RPC support simply add `-DGGML_RPC=ON` to
+the CMake command line switches.
+
+To run on additional nodes start the server on the nodes with
+
+`rpc-server -p 6666 -c`
+
+`-c` will use a local cache to store the tensors.
+
+Run the client adding the `--rpc`switch:
+
+`llama-cli -m mymodel.gguf --rpc "nid002998:6666,nid002995:6666" -cnv`
