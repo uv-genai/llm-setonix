@@ -11,10 +11,10 @@ llama-cli -hf unsloth/gemma-3-4b-it-GGUF:Q8_0 -cnv
 On node =nid002998=
 `rpc-server --host 0.0.0.0 -p 6666 -c`
 
-To create one server per GPU prefix the command line invocation with `CUDA_DEVICE=`:
+To specofy which GPUs should be used use the `CUDA_VISIBLE_DEVICES` variable:
 
-`CUDA_DEVICE=0 rpc-server --host 0.0.0.0 -p 6666 -c &`
-`CUDA_DEVICE=1 rpc-server --host 0.0.0.0 -p 6666 -c &`
+`CUDA_VISIBLE_DEVICES=0,1,2,3 rpc-server --host 0.0.0.0 -p 6666 -c &`
+
 ...
 
 
