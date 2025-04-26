@@ -316,11 +316,15 @@ The model can now be run through llama.cpp:
 
 Optionally quantise the model to reduce the size using `llama-quantize`.
 
+When loading large models split into multiple =gguf= file through the
+=-m= command line switch simply point to the first file (00001) in
+the dataset.
+
 ## Limitations of gfx90a architecture
 
 The AMD MI250 GPUs do not support natively 4 and 6 bit types and therefore
-it is not possible to use the quantised models, attempts to do so
-will result in the following warning:
+some qunatised modesl are not properly supported, attempts to use quantised
+models might result in the following warning:
 
 `load_tensors: tensor 'token_embd.weight' (q4_K) (and 0 others) cannot be used with preferred buffer type ROCm_Host, using CPU instead`
 
