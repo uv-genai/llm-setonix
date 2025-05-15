@@ -33,6 +33,10 @@ environment variable beacuse the discovery will happen automatically.
 This allows access to the Ray dashboard through `http://nid002220:8265` where
 `nid002220` is the head node.
 
+If you want to get more advanced reporting you might want to install `py-spy` and
+`memray`, but in any case it is better to integrate with Grafana and Prometheus for
+an optimal experience.
+
 ## 3. Run Ray on two nodes.
 
 Assuming you have allocated two nodes `nid002220` and `nid002222`
