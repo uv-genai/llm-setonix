@@ -136,3 +136,14 @@ Output:
    "truncated" : false
 }
 ```
+
+## Distributed Inference Engines
+
+
+* TensorRT-LLM
+* LMDeploy
+* Aphrodite
+* SGLang
+* vLLM
+
+All require ROCm >= 6.1.

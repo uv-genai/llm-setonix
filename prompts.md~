@@ -1,0 +1,119 @@
+/home/uvaretto/llm-models/DeepSeek-V3-0324/Q2_K/DeepSeek-V3-0324-Q2_K-00001-of-00005.gguf
+
+
+``` cpp
+#include <stdio.h>
+#include <stdlib.h>
+#define cudaCheckError() {                                            \
+    cudaError_t e=cudaGetLastError();                                 \
+    if(e!=cudaSuccess) {                                             \
+        printf("CUDA error %s:%d: %s\n",__FILE__,__LINE__,cudaGetErrorString(e)); \
+        exit(0);                                                     \
+    }                                                                \
+}
+
+// Define the grid dimensions
+#define BLOCK_SIZE_X 16
+#define BLOCK_SIZE_Y 16
+#define RADIUS 1  // For 3x3 stencil, radius=1
+
+__global__ void stencil2d(float *input, float *output, int width, int height) {
+    // Calculate global indices
+    int col = blockIdx.x * blockDim.x + threadIdx.x;
+    int row = blockIdx.y * blockDim.y + threadIdx.y;
+    
+    // Boundary check
+    if (col >= width || row >= height) return;
+    
+    // Shared memory for the block plus halo
+    __shared__ float s_data[BLOCK_SIZE_Y + 2*RADIUS][BLOCK_SIZE_X + 2*RADIUS];
+    
+    // Calculate local indices (including halo)
+    int l_col = threadIdx.x + RADIUS;
+    int l_row = threadIdx.y + RADIUS;
+    
+    // Load this thread's data into shared memory
+    if ((col < width) && (row < height)) {
+        s_data[l_row][l_col] = input[row * width + col];
+    }
+    
+    // Load halo (edges of the block) into shared memory
+    // Top halo
+    if (threadIdx.y < RADIUS) {
+        int halo_row = row - RADIUS;
+        if (halo_row >= 0) {
+            s_data[l_row - RADIUS][l_col] = input[halo_row * width + col];
+        }
+    }
+    // Left halo
+    if (threadIdx.x < RADIUS) {
+        int halo_col = col - RADIUS;
+        if (halo_col >= 0) {
+            s_data[l_row][l_col - RADIUS] = input[row * width + halo_col];
+        }
+    }
+    
+    __syncthreads();
+    
+    // Apply stencil operation (5-point stencil)
+    if (col < width && row < height) {
+        float result = 0.0f;
+        float sum = 0.0f;
+        
+        // Center element
+        result = s_data[l_row][l_col] * 0.2f;
+        
+        // Neighbors
+        result += s_data[l_row-1][l_col] * 0.2f; // top
+        result += s_data[l_row+1][l_col] * 0.2f; // bottom
+        result += s_data[l_row][l_col-1] * 0.2f; // left
+        result += s_data[l_row][l_col+1] * 0.2f; // right
+        
+        // Store result
+        output[row * width + col] = result;
+    }
+}
+
+int main() {
+    int width = 1024;
+    int height = 1024;
+    size_t size = width * height * sizeof(float);
+    
+    // Allocate host memory
+    float *h_input = (float*)malloc(size);
+    float *h_output = (float*)malloc(size);
+    
+    // Initialize input data
+    for (int i = 0; i < width * height; i++) {
+        h_input[i] = (float)rand() / RAND_MAX;
+    }
+    
+    // Allocate device memory
+    float *d_input, *d_output;
+    cudaMalloc(&d_input, size);
+    cudaMalloc(&d_output, size);
+    
+    // Copy input to device
+    cudaMemcpy(d_input, h_input, size, cudaMemcpyHostToDevice);
+    
+    // Configure grid and block dimensions
+    dim3 blockDim(BLOCK_SIZE_X, BLOCK_SIZE_Y);
+    dim3 gridDim((width + blockDim.x - 1) / blockDim.x, 
+                  (height + blockDim.y - 1) / blockDim.y);
+    
+    // Launch kernel
+    stencil2d<<<gridDim, blockDim>>>(d_input, d_output, width, height);
+    cudaCheckError();
+    
+    // Copy results back to host
+    cudaMemcpy(h_output, d_output, size, cudaMemcpyDeviceToHost);
+    
+    // Cleanup
+    cudaFree(d_input);
+    cudaFree(d_output);
+    free(h_input);
+    free(h_output);
+    
+    return 0;
+}
+```
