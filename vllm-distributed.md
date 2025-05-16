@@ -6,7 +6,7 @@ Singularity being way faster to execute commands.
 
 Distributed inference is achieved through [Ray](https://www.ray.io/) which
 logically aggregates all the computational resources and memory and allows
-remotr execution of Python code on both CPU and GPU.
+remote execution of Python code on both CPU and GPU.
 The Ray engine is a generic execution engine enabling any kind of distributed
 processing beyond serving LLMs.
 
@@ -20,9 +20,9 @@ The container includes both Ray and vLLM.
 
 It is better to also map the `/app` folder to a local foldeer to avoid
 warnings and to store log files, so add `--bind <local path>:/app` to
-the command line, in my case I am using `~/tmp/apptainer/app`.
+the command line, I am using `~/tmp/apptainer/app`.
 
-IKMPORTANT: `unset ROCR_VISIBLE_DEVICES` to avoid issues, in general
+IMPORTANT: `unset ROCR_VISIBLE_DEVICES` to avoid issues, in general
 `HIP_VISIBLE_DEVICES` should be used but it's better not to set any
 environment variable beacuse the discovery will happen automatically.
 
@@ -65,7 +65,7 @@ of the models it might be a good idea to download them to Lustre and create a sy
 It is also possible to download a model to a local directory by specifying `--local-dir` 
 on the command line.
 
-If you do not download the model, it will downloaded when `vllm` is executed.
+If you do not download the model, it will be downloaded when `vllm` is executed.
 
 ## 4. Run llvm on any node.
 
@@ -93,6 +93,8 @@ curl http://nid002220:8000/v1/completions -H "Content-Type: application/json" \
 ## (optional) Access the Ray dashboard
 
 Connect to `http://nid002220:8265` to display the Ray dashboard.
+Use a tunnel to connect from remote:
+`ssh -L 8625:nid002220:8625 <username>@setonix.pawsey.org.au`
 
 ## Other toolkits
 
