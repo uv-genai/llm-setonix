@@ -10,6 +10,9 @@ remote execution of Python code on both CPU and GPU.
 The Ray engine is a generic execution engine enabling any kind of distributed
 processing beyond serving LLMs.
 
+It is possible to use an external Ray engine but it needs to match the
+exact version and Python version used by vLLM.
+
 ## 1. Download container
 
 `singularity pull docker://rocm/vllm:rocm6.3.1_instinct_vllm0.8.3_20250415`
@@ -28,7 +31,7 @@ environment variable beacuse the discovery will happen automatically.
 
 ## 2. Add support for Ray dashboard
 
-`singularity exec -H $PWD ./vllm_rocm6.3.1_instinct_vllm0.8.3_20250415.sif pip install ray[default]`
+`singularity exec ./vllm_rocm6.3.1_instinct_vllm0.8.3_20250415.sif pip install ray[default]`
 
 This allows access to the Ray dashboard through `http://nid002220:8265` where
 `nid002220` is the head node.
@@ -43,9 +46,9 @@ Assuming you have allocated two nodes `nid002220` and `nid002222`
 through `salloc`:
 
 1. run ray on the head node (`nid002220`):
-   `singularity exec -H $PWD ./vllm_rocm6.3.1_instinct_vllm0.8.3_20250415.sif ray start --num-gpus 8 --head --dashboard-host=0.0.0.0`
+   `singularity exec ./vllm_rocm6.3.1_instinct_vllm0.8.3_20250415.sif ray start --num-gpus 8 --head --dashboard-host=0.0.0.0`
 2. run ray on all the other worker nodes, only one in this case, specifying the IP address of the head node:
-   `singularity exec -H $PWD ./vllm_rocm6.3.1_instinct_vllm0.8.3_20250415.sif ray start --num-gpus 8 --address 10.253.133.93:6379`
+   `singularity exec ./vllm_rocm6.3.1_instinct_vllm0.8.3_20250415.sif ray start --num-gpus 8 --address 10.253.133.93:6379`
 
 Record the IP addresses returned by ray and *on each node* execute:
 `export LLVM_HOST_IP=<local ray ip address>`
