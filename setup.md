@@ -199,8 +199,8 @@ to install under `~/.opt/llama.cpp` you can use the following command line
 
 ```
 HIPCXX="$(hipconfig -l)/clang" HIP_PATH="$(hipconfig -R)" \
-    cmake -S . -B build-rocm -DGGML_HIP=ON -DAMDGPU_TARGETS=gfx90a -DCMAKE_INSTALL_PREFIX=~/.opt/llama.cpp -DCMAKE_BUILD_TYPE=Release \
-    && cmake --build build-rocm --config Release -- -j 32
+    cmake -S . -B build-rocm -DGGML_HIP=ON -DAMDGPU_TARGETS=gfx90a -DCMAKE_INSTALL_PREFIX=~/.opt/llama.cpp \
+    -DGGML_RPC=ON -DCMAKE_BUILD_TYPE=Release && cmake --build build-rocm --config Release -- -j 32
 ```
 
 `gfx90a` matches the MI 250x architecture, for a list of all the supported
