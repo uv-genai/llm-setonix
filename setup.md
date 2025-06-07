@@ -144,7 +144,7 @@ Copy files from the `ollama` directory into destination directory.
 
 ### Run
 
-`salloc --mem=0 -p gpu-dev --gres=gpu:8 --account=pawsey0001-gpu`
+`salloc --exclusive -p gpu-dev --account=pawsey0001-gpu`
 
 `ollama serve &`
 
@@ -180,7 +180,8 @@ Start by cloning the git repository:
 ```
 module load cmake/3.27.7
 module load gcc/12.2.0
-module load rocm/5.7.3
+module use /software/setonix/unsupported
+module load rocm/6.3.2
 ```
 
 **2. Set the path to the C and  C++ compilers**
@@ -211,30 +212,30 @@ architectures consult this page: https://rocm.docs.amd.com/en/latest/reference/g
 
 **5. Install commmand line tools**
 
-The models read by llama.cpp need to be in =gguf= format which in many cases
-requires conversion from the =safetensors= format used by most models
+The models read by llama.cpp need to be in `gguf` format which in many cases
+requires conversion from the `safetensors` format used by most models
 on Huggingface.
 
-To build all the tools =cd= into llama.cpp git repository and run the
+To build all the tools cd into `llama.cpp` git repository and run the
 following commands:
 
 ```
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements
+pip install -r requirements.txt
 ```
 
 The tools include:
 
-* =convert_hf_to_gguf.py= convert from safetensors Hugginface model to gguf
-* =convert_llama_ggml.py=_to_gguf convert from ggml tensors to gguf
-* =convert_lora_to_gguf.py= convert LoRA finetuned model to gguf
+* `convert_hf_to_gguf.py` convert from safetensors Hugginface model to gguf
+* `convert_llama_ggml.py_to_gguf` convert from ggml tensors to gguf
+* `convert_lora_to_gguf.py` convert LoRA finetuned model to gguf
 
 **6. Run**
 
 Allocate GPU node:
 
-`salloc --mem=0 -p gpu-dev --gres=gpu:8 --account=pawsey0001-gpu`
+`salloc -p gpu-dev --exclusive --account=pawsey0001-gpu`
 
 Run model:
 
