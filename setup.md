@@ -208,7 +208,9 @@ architectures consult this page: https://rocm.docs.amd.com/en/latest/reference/g
 
 **4. Install**
 
-`cmake --install ./build`
+`cmake --install ./rocm-build`
+
+Note: the name of the build director changes over time.
 
 **5. Install commmand line tools**
 
