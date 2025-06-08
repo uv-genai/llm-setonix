@@ -8,26 +8,65 @@ llama-cli -hf unsloth/gemma-3-4b-it-GGUF:Q8_0 -cnv
 
 ## Multinode
 
-On node =nid002998=
+On node `nid002998`
 `rpc-server --host 0.0.0.0 -p 6666 -c`
 
-To specofy which GPUs should be used use the `CUDA_VISIBLE_DEVICES` variable:
+To specify which GPUs should be used use the -d arg:
 
-`CUDA_VISIBLE_DEVICES=0,1,2,3 rpc-server --host 0.0.0.0 -p 6666 -c &`
+rpc-server --host 0.0.0.0 -p 6666 -d ROCm0 -c &`
 
-...
+To see the list of available devices run:
+```
+$> llama-server --list-devices
 
+ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
+ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
+ggml_cuda_init: found 8 ROCm devices:
+  Device 0: AMD Instinct MI250X, gfx90a:sramecc+:xnack- (0x90a), VMM: no, Wave Size: 64
+  Device 1: AMD Instinct MI250X, gfx90a:sramecc+:xnack- (0x90a), VMM: no, Wave Size: 64
+  Device 2: AMD Instinct MI250X, gfx90a:sramecc+:xnack- (0x90a), VMM: no, Wave Size: 64
+  Device 3: AMD Instinct MI250X, gfx90a:sramecc+:xnack- (0x90a), VMM: no, Wave Size: 64
+  Device 4: AMD Instinct MI250X, gfx90a:sramecc+:xnack- (0x90a), VMM: no, Wave Size: 64
+  Device 5: AMD Instinct MI250X, gfx90a:sramecc+:xnack- (0x90a), VMM: no, Wave Size: 64
+  Device 6: AMD Instinct MI250X, gfx90a:sramecc+:xnack- (0x90a), VMM: no, Wave Size: 64
+  Device 7: AMD Instinct MI250X, gfx90a:sramecc+:xnack- (0x90a), VMM: no, Wave Size: 64
+Available devices:
+  ROCm0: AMD Instinct MI250X (65520 MiB, 65462 MiB free)
+  ROCm1: AMD Instinct MI250X (65520 MiB, 65462 MiB free)
+  ROCm2: AMD Instinct MI250X (65520 MiB, 65462 MiB free)
+  ROCm3: AMD Instinct MI250X (65520 MiB, 65462 MiB free)
+  ROCm4: AMD Instinct MI250X (65520 MiB, 65462 MiB free)
+  ROCm5: AMD Instinct MI250X (65520 MiB, 65462 MiB free)
+  ROCm6: AMD Instinct MI250X (65520 MiB, 65462 MiB free)
+  ROCm7: AMD Instinct MI250X (65520 MiB, 65462 MiB free)AMD
+```
 
-On node =nid002996=
-`rpc-server --host 0.0.0.0 -p 6666 -c`
+On node `nid002996``
+`rpc-server --host 0.0.0.0 -p 6666 -d ROCm0 -c`
 
 On client node
 `llama-cli -hf unsloth/gemma-3-4b-it-GGUF:Q8_0 -cnv --rpc "nid002998:6666,nid002996:6666" -cnv`
 
-Ideally servers should be started through a SLURM batch job and the client from
-interactive session.
+On Cray EX systems the compute nodes have separate NICs with separate IP addresses for the
+high-speed network and the control plane.
+Instead of `--host 0.0.0.0` you should use the IP address associated with one of the
+`hsn` adapters; run `ifconfig` on the node to see the list.
 
-## Serve API
+When using hsn addressess apss the IP address instead of the node name to `llama-cli`.
+
+Note that llama.cpp can handle at most 16 devices, including CPUs and therefore it is not possible to
+use 16 GPUs, only 15 + one CPU.
+It is possible to increase the number by changing the value in the `ggml/src/ggml-backend.cpp` file and recompiling:
+
+```
+#ifndef GGML_SCHED_MAX_BACKENDS
+#define GGML_SCHED_MAX_BACKENDS 16
+#endif
+```
+
+
+
+## Server API
 
 Both client and server running on same node.
 
@@ -41,9 +80,9 @@ curl --request POST \
     --data '{"prompt": "who are you?"} | json_pp
 ```
 
-=json_pp= is a tool to pretty print the JSON output.
+`json_pp` is a tool to pretty print the JSON output.
 
-The =content= field of the returned output contains the
+The `content` field of the returned output contains the
 output.
 
 Output:
