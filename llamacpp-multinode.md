@@ -64,6 +64,28 @@ It is possible to increase the number by changing the value in the `ggml/src/ggm
 #endif
 ```
 
+Example of generated output for a 405 GB DeepSeek-R1 4-bit model:
+```
+load_tensors: offloading 61 repeating layers to GPU
+load_tensors: offloading output layer to GPU
+load_tensors: offloaded 62/62 layers to GPU
+load_tensors: RPC[10.253.133.110:6002] model buffer size = 15289.97 MiB
+load_tensors: RPC[10.253.133.110:6003] model buffer size = 26603.46 MiB
+load_tensors: RPC[10.253.133.85:6002] model buffer size = 26603.46 MiB
+load_tensors: RPC[10.253.133.85:6003] model buffer size = 25675.85 MiB
+load_tensors: RPC[10.253.133.82:6002] model buffer size = 25675.85 MiB
+load_tensors: RPC[10.253.133.82:6003] model buffer size = 26603.46 MiB
+load_tensors: RPC[10.253.133.79:6002] model buffer size = 25675.85 MiB
+load_tensors:   CPU_Mapped model buffer size =   497.11 MiB
+load_tensors:        ROCm0 model buffer size = 32790.52 MiB
+load_tensors:        ROCm1 model buffer size = 25675.85 MiB
+load_tensors:        ROCm2 model buffer size = 25675.85 MiB
+load_tensors:        ROCm3 model buffer size = 26603.46 MiB
+load_tensors:        ROCm4 model buffer size = 25675.85 MiB
+load_tensors:        ROCm5 model buffer size = 26603.46 MiB
+load_tensors:        ROCm6 model buffer size = 28458.68 MiB
+load_tensors:        ROCm7 model buffer size = 22068.99 MiB
+```
 
 
 ## Server API
