@@ -1,0 +1,18 @@
+--temp - controls looseness on prompt or how wild/creative the AI is
+--top_k - number of most likely next words in a pool to choose from
+--top_p - how probable the word has to be to get picked?
+--ctx_size - maximum length of the prompt and output combined (in tokens)
+--n_predict - maximum number of tokens the model will output after outputting the prompt - number of tokens to predict
+--keep - number of tokens to keep from the initial prompt - when the n_ctx limit is reached
+--repeat_last_n - last n tokens to consider for penalize - size of window of tokens that the model will be penalized for repeating
+--repeat_penalty - sets the amount the model will be penalized for attempting to use one of those tokens
+
+The only things that would affect inference speed are model size (7B is fastest, 65B is slowest) and your CPU/RAM specs.
+
+n_ctx sets the maximum length of the prompt and output combined (in tokens), and n_predict sets the maximum number of tokens the model will output after outputting the prompt.
+
+repeat_last_n controls how large the window of tokens is that the model will be penalized for repeating (repeat_penalty sets the amount the model will be penalized for attempting to use one of those tokens).
+
+n_batch only affects the phase where the model is ingesting the prompt. You might find that part runs faster if you increase it. It has no effect on the part where the model generates new output.
+
+n_keep is used when the n_ctx limit is reached. A new prompt will be constructed with the first n_keep characters of the original prompt plus the second half of the output to free up space for more conversation.
