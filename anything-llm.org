@@ -1,0 +1,33 @@
+* AnythingLLM
+
+AnythingLLM is a web application that allows you to interact with document and online data sources. It is built using Next.js, React, and Tailwind CSS.
+
+** Features
+
+  - Interact with online data sources
+  - Interact with documents
+  - Search for information
+  - Generate text
+  - Use Agent and MCP servers
+
+** Installation
+
+   1. Install nvm, npm and npx (with npm).
+   2. Select node version 20.3.0 (or whatever works for you): =nvm use 20.3.0=.
+   3. Install yarn =npm install -g yarn=.
+   4. Clone anything-llm repo and cd into it.
+   5. Run =yarn setup=.
+   6. =cp server/.env.example server/.env= to create the basic ENV file for where instance settings will be read from on service start.
+   7. Add =STORAGE_DIR="/your/absolute/path/to/server/storage"= to the .env file in both =server/= and =collector/= directories.
+   8. Open =frontend/.env= and add ~VITE_BASE_API="http://0.0.0.0:3000"~ to the .env file.
+   9. Build the frontend application: =cd frontend && yarn build=, this will produce a frontend/dist folder that 
+   10. will be used later. Copy =frontend/dist= to =server/public=: =cp -R frontend/dist server/public=. 
+       This should create a folder in server named public which contains a top level index.html file and various other files/folders.
+   11. Migrate and prepare your database file.
+   12. ~cd server && npx prisma generate --schema=./prisma/schema.prisma~.
+   13. ~cd server && npx prisma migrate deploy --schema=./prisma/schema.prisma~.
+   14. Boot the server in production ~cd server && NODE_ENV=production node index.js &~
+   15. Boot the collection in another process ~cd collector && NODE_ENV=production node index.js &~
+
+AnythingLLM should now be running on ~http://localhost:3001~!
+
